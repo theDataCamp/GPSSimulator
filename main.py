@@ -134,6 +134,7 @@ class NMEASimulator(tk.Tk):
         satellites = ",".join(["{:02}".format(random.randint(1, 30)) for _ in range(12)])
         formatted_gsa = base_gsa.format(satellites=satellites)
         nmea_gsa = formatted_gsa + "*" + self.calculate_checksum(formatted_gsa[1:])
+        nmea_gsa = "$GPGSA,A,3,01,05,,,,18,,22,30,31,48,51,2.5,1.1,1.9*39"
         return nmea_gsa
 
     def generate_random_nmea_data(self, current_time, current_date):
@@ -179,11 +180,15 @@ class NMEASimulator(tk.Tk):
                     nmea_gsa = self.generate_gsa_data()
 
                     # Send the sentences
-                    ser.write(nmea_rmc.encode('utf-8'))
-                    ser.write(b'\r\n')
                     ser.write(nmea_gga.encode('utf-8'))
                     ser.write(b'\r\n')
                     print(f"Sent gga {nmea_gga}")
+                    for gsv_line in nmea_gsv:
+                        ser.write(gsv_line.encode('utf-8'))  # Add GSV data to the serial output
+                        ser.write(b'\r\n')
+                    print(f"Sent gsv {nmea_gsv}")
+                    ser.write(nmea_rmc.encode('utf-8'))
+                    ser.write(b'\r\n')
                     ser.write(nmea_vtg.encode('utf-8'))
                     ser.write(b'\r\n')
                     print(f"Sent vtg {nmea_vtg}")
@@ -191,10 +196,6 @@ class NMEASimulator(tk.Tk):
                     ser.write(b'\r\n')
                     print(f"Sent gsa {nmea_gsa}")
                     print(f"Sent rmc {nmea_rmc}")
-                    for gsv_line in nmea_gsv:
-                        ser.write(gsv_line.encode('utf-8'))  # Add GSV data to the serial output
-                        ser.write(b'\r\n')
-                    print(f"Sent gsv {nmea_gsv}")
 
 
                     sleep_interval = float(self.sleep_interval_var.get())
