@@ -49,26 +49,26 @@ jobs:
     # Creating Executables
     - name: Create Executable for Linux
       if: contains(matrix.os, 'ubuntu-latest')
-      run: pyinstaller --onefile --name TimerLinux main.py
+      run: pyinstaller --onefile --name GPSSimLinux main.py
 
     - name: Create Executable for Windows
       if: contains(matrix.os, 'windows-latest')
-      run: pyinstaller --onefile --name WindowsTimer main.py
+      run: pyinstaller --onefile --name GPSSimWindows main.py
 
     # Uploading Artifacts
     - name: Upload Artifacts (Linux)
       if: contains(matrix.os, 'ubuntu-latest')
       uses: actions/upload-artifact@v3
       with:
-        name: TimerLinux
-        path: ./dist/TimerLinux
+        name: GPSSimLinux
+        path: ./dist/GPSSimLinux
 
     - name: Upload Artifacts (Windows)
       if: contains(matrix.os, 'windows-latest')
       uses: actions/upload-artifact@v3
       with:
-        name: WindowsTimer
-        path: .\dist\WindowsTimer.exe
+        name: GPSSimWindows
+        path: .\dist\GPSSimWindows.exe
 
     - name: Upload requirements.txt
       uses: actions/upload-artifact@v3
